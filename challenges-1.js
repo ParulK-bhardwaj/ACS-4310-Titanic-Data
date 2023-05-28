@@ -69,7 +69,8 @@ const getSurvivorCountForClass = (data, pclass) => {
 // the number of passengers who did not survive for that class. 
 
 const getCasualityCountForClass = (data, pclass) => {
-	return data.filter(passenger => passenger.fields.pclass === pclass && passenger.fields.survived === 'No').length
+	const casualityData = data.filter(passenger => passenger.fields.pclass === pclass && passenger.fields.survived === 'No')
+	return casualityData.length
 }
 
 // 7 ---------------------------------------------------------------
@@ -151,10 +152,10 @@ const getCasualitiesByGender = (data, gender) => {
 // where the fare is missing! 
 
 const getTotalFare = (data) => {
-	const faresPresentRecords = data.filter(passenger => passenger.fields.fare !== undefined)
-    const passesngersWhoPaid = faresPresentRecords.map(passenger => passenger.fields.fare);
-  
-  	const totalFare = passesngersWhoPaid.reduce((total, fare) => total + fare, 0);
+	const totalFare = data
+		.filter(passenger => passenger.fields.fare !== undefined)
+  		.reduce((acc, passeneger) => passeneger.fields.fare + acc, 0);
+  	
 	return totalFare
 }
 
@@ -164,10 +165,10 @@ const getTotalFare = (data) => {
 // missing a fare! 
 
 const getAverageFare = (data) => {
-	const faresPresentRecords = data.filter(passenger => passenger.fields.fare !== undefined)
+	const faresPresentRecords = data
+		.filter(passenger => passenger.fields.fare !== undefined)
     const passesngersWhoPaid = faresPresentRecords.map(passenger => passenger.fields.fare);
-  
-  	const totalFare = passesngersWhoPaid.reduce((total, fare) => total + fare, 0);
+  	const totalFare = 	passesngersWhoPaid.reduce((acc, fare) => fare + acc, 0);
 	const averageFare = totalFare / passesngersWhoPaid.length
 	return averageFare
 }
@@ -181,7 +182,20 @@ const getAverageFare = (data) => {
 // 4 + 5 = 9 / 2 median is 4.5!
 
 const getMedianFare = (data) => {
-	return 0
+	const faresPresentRecords = data
+		.filter(passenger => passenger.fields.fare !== undefined)
+    const passesngersWhoPaid = faresPresentRecords.map(passenger => passenger.fields.fare);
+  	
+	// Sort the fares from smallest to largest
+	const sortedFares = passesngersWhoPaid.sort((a, b) => a - b)
+    // If the length of fares is odd, return the middle fare
+    if (sortedFares.length % 2 !== 0) {
+        return sortedFares[Math.floor(sortedFares.length / 2)]
+    } 
+    // If the length of fares is even, return the average of the two middle fares
+    const mid1 = sortedFares[sortedFares.length / 2 - 1]
+    const mid2 = sortedFares[sortedFares.length / 2]
+    return (mid1 + mid2) / 2
 }
 
 // 18 --------------------------------------------------------------
@@ -190,14 +204,32 @@ const getMedianFare = (data) => {
 // available. 
 
 const getAverageAge = (data) => {
-	return 0
+	const agePresentRecords = data
+	.filter(passenger => passenger.fields.age !== undefined)
+	const passesngersAge = agePresentRecords.map(passenger => passenger.fields.age);
+	const totalAge = 	passesngersAge.reduce((acc, age) => age + acc, 0);
+	const averageAge= totalAge / passesngersAge.length
+	return averageAge
 }
 
 // 19 --------------------------------------------------------------
 // Return the median age from passengers.
 
 const getMedianAge = (data) => {
-	return 0
+	const agePresentRecords = data
+	.filter(passenger => passenger.fields.age !== undefined)
+	const passesngersAge = agePresentRecords.map(passenger => passenger.fields.age);
+	
+	// Sort the ages from smallest to largest
+	const sortedAges = passesngersAge.sort((a, b) => a - b)
+	// If the length of Age is odd, return the middle age
+	if (sortedAges.length % 2 !== 0) {
+		return sortedAges[Math.floor(sortedAges.length / 2)]
+	} 
+	// If the length of fares is even, return the average of the two middle fares
+	const mid1 = sortedAges[sortedAges.length / 2 - 1]
+	const mid2 = sortedAges[sortedAges.length / 2]
+	return (mid1 + mid2) / 2
 }
 
 // 20 --------------------------------------------------------------
@@ -205,7 +237,12 @@ const getMedianAge = (data) => {
 // the total number. 
 
 const getAverageAgeByGender = (data, gender) => {
-	return 0
+	const agePresentGenderRecords = data
+	.filter(passenger => passenger.fields.age !== undefined && passenger.fields.sex === gender)
+	const passesngersAge = agePresentGenderRecords.map(passenger => passenger.fields.age);
+	const totalAge = 	passesngersAge.reduce((acc, age) => age + acc, 0);
+	const averageAge = totalAge / passesngersAge.length
+	return averageAge
 }
 
 // --------------------------------------------------------------
