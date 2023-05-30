@@ -52,9 +52,10 @@ const filterNullForProperty = (data, property) => {
 // Return the total of all values for a given property. This
 
 const sumAllProperty = (data, property) => {
-	return 0
+	const validRecords = data.filter(p => p.fields[property] !== undefined)
+	const total =  validRecords.reduce(( sum, p) => sum + p.fields[property], 0)
+	return total
 }
-
 
 // 5 -------------------------------------------------------------
 // Count unique values for property. The goal here is return an 
@@ -67,9 +68,16 @@ const sumAllProperty = (data, property) => {
 // at Cherbourg, 77 emabrked at Queenstown, and 2 are undedfined
 
 const countAllProperty = (data, property) => {
-	return {}
+	return data.reduce((acc, p) => {
+		const key = p.fields[property]
+		if (key in acc) {
+			acc[key]++
+		} else {
+			acc[key] = 1
+		}
+		return acc
+	}, {}) // start with an empty object
 }
-
 
 // 6 ------------------------------------------------------------
 // Make histogram. The goal is to return an array with values 
@@ -105,6 +113,7 @@ const normalizeProperty = (data, property) => {
 	const values = data
 		.filter(p => p.fields[property] !== undefined)
 		.map(p => p.fields[property]);
+	// The spread operator allows the Math.max function to compare the values individually 
 	const maxValue = Math.max(...values);
 	const normalizedValues = values.map(value => value / maxValue);
 	return normalizedValues;
@@ -117,9 +126,14 @@ const normalizeProperty = (data, property) => {
 // For example if the property string were "sex" this function 
 // would return ['male', 'female']
 
+// https://stackoverflow.com/questions/1960473/get-all-unique-values-in-a-javascript-array-remove-duplicates
 const getUniqueValues = (data, property) => {
+	// values array
 	const values = data.map(p => p.fields[property]);
-	const uniqueValues = [...new Set(values)];
+	// The Set object is a built-in JavaScript object that allows us to store unique values of any type. 
+	// When we pass an iterable (such as an array) to the Set constructor,
+	// it automatically removes duplicate values to return unique values.
+	const uniqueValues = [...new Set(values)]; // the spread operator ... transform the set back into an Array
 	return uniqueValues;
 }
 
